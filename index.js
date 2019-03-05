@@ -7,13 +7,14 @@ const helpers = require('./utils/helpers');
 
 let server = {};
 
+
 server.httpServer = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url, true);
 
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, '');
     const queryStringObject = parsedUrl.query;
-    const method = req.method;
+    const method = req.method.toLowerCase();
     const headers = req.headers;
 
     let decoder = new StringDecoder('utf-8');
@@ -37,14 +38,24 @@ server.httpServer = http.createServer((req, res) => {
         };
 
         routerHandler(data, (statusCode, payload, contentType) => {
+            contentType = typeof (contentType) == "undefined" ? 'json' : contentType;
+
+            let payloadString = '';
+
+            if (contentType === 'json') {
+                payloadString = JSON.stringify(payload);
+            }
+
+
             res.writeHead(statusCode);
-            res.end(payload);
+            res.end(payloadString);
         })
     });
 });
 
 const routers = {
     '': routing.main,
+    'users': routing.users,
     'notFound': routing.notFound
 };
 
