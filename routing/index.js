@@ -1,8 +1,9 @@
+const main = require('./main');
+const notFound = require('./notFound');
 
 let routing = {};
 
-routing.define = (req, res, data) => {
-    res.end('Hello from define.js!')
-};
+routing.main = main;
+routing.notFound = notFound;
 
 module.exports = routing;
