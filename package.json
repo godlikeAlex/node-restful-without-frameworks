@@ -1,0 +1,22 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "server for development mini application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godlikeAlex/node-restful-without-frameworks.git"
+  },
+  "author": "Aleksandr YUrkovskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/godlikeAlex/node-restful-without-frameworks/issues"
+  },
+  "homepage": "https://github.com/godlikeAlex/node-restful-without-frameworks#readme",
+  "devDependencies": {
+    "mysql": "^2.16.0"
+  }
+}
