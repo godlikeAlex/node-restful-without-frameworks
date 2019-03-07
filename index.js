@@ -1,6 +1,7 @@
 const http = require('http');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
+const db = require('./utils/db');
 
 const routing = require('./routing');
 const helpers = require('./utils/helpers');
@@ -37,7 +38,7 @@ server.httpServer = http.createServer((req, res) => {
             payload: helpers.parseJsonToObject(buffer)
         };
 
-        routerHandler(data, (statusCode, payload, contentType) => {
+        routerHandler(data, db, (statusCode, payload, contentType) => {
             contentType = typeof (contentType) == "undefined" ? 'json' : contentType;
 
             let payloadString = '';
