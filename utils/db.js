@@ -22,4 +22,17 @@ db.getAll = (table, callback) => {
     });
 };
 
+db.getById = (id, callback) => {
+    pool.getConnection((err, connection) => {
+        connection.query(`SELECT * FROM users WHERE id = "${id}"`, (err, data) => {
+            if(!err) {
+                callback(false, data);
+                connection.release();
+            } else {
+                callback(true, err);
+            }
+        })
+    })
+};
+
 module.exports = db;
