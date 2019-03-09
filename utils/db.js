@@ -5,8 +5,18 @@ const pool = mysql.createPool(config.dataBase);
 
 let db = {};
 
-db.insert = () => {
-    return null;
+db.insert = (user, callback) => {
+    const {id, name, password, mail} = user;
+   pool.getConnection((err, connection) => {
+       connection.query(`INSERT INTO users (id, name, password, mail, user_group) VALUES ("${id}","${name}","${password}","${mail}","guest")`,(err,data) => {
+           if(!err) {
+               callback(false, data);
+               connection.release();
+           }else{
+               callback(true, err);
+           }
+       })
+   })
 };
 
 db.getAll = (table, callback) => {
