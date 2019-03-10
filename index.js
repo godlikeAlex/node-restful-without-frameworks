@@ -8,7 +8,6 @@ const helpers = require('./utils/helpers');
 
 let server = {};
 
-
 server.httpServer = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url, true);
 
