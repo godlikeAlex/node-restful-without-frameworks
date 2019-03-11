@@ -63,8 +63,21 @@ users.put = (data, callback) => {
     callback(200, {message: 'Auth required for put!'});
 };
 
-users.delete = (data, callback) => {
-    callback(200, {message: 'Auth required for post!'});
+users.delete = (data, db, callback) => {
+    const userId = typeof (data.queryStringObject.id) === 'string' && data.queryStringObject.id.length === 25 ? data.queryStringObject.id : false;
+
+    if(userId) {
+        db.getById(userId, (err, data) => {
+            if (!err && data.length > 0) {
+                db.deleteUser(userId, (err, data) => {
+                    if(!err) callback(200, data);
+                    else callback(400, {'error': `${userId} not found`})
+                });
+            } else callback(400, {'error': 'Required user not found!'})
+        });
+    } else {
+        callback(400, {'error': 'Missing required fields'});
+    }
 };
 
 module.exports = users;
