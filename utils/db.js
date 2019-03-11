@@ -45,4 +45,17 @@ db.getById = (id, callback) => {
     })
 };
 
+db.deleteUser = (id, callback) => {
+    pool.getConnection((err, connection) => {
+        connection.query(`DELETE FROM users WHERE id = '${id}'`, (err, data) => {
+            if(!err) {
+                callback(false, data);
+                connection.release();
+            }else {
+                callback(true, data);
+            }
+        });
+    })
+};
+
 module.exports = db;
