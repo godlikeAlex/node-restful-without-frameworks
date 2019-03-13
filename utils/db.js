@@ -5,6 +5,7 @@ const pool = mysql.createPool(config.dataBase);
 
 let db = {};
 
+
 db.insert = (user, callback) => {
     const {id, name, password, mail} = user;
    pool.getConnection((err, connection) => {
@@ -17,6 +18,22 @@ db.insert = (user, callback) => {
            }
        })
    })
+};
+
+db.updateUser = (set, value, id, callback) => {
+    db.getById(id, (err, data) => {
+        if(data.length > 0) {
+            console.log(err, data);
+            pool.getConnection((err, connection) => {
+                connection.query(`UPDATE users SET ${set} = '${value}' WHERE id = '${id}'`, (err, data) => {
+                    if(!err) {
+                        callback(false, data);
+                        connection.release();
+                    } else callback(true, err);
+                })
+            })
+        } else callback(true, 'User not found')
+    })
 };
 
 db.getAll = (table, callback) => {
