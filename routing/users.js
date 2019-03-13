@@ -59,8 +59,48 @@ users.get = (data, db, callback) => {
 
 };
 
-users.put = (data, callback) => {
-    callback(200, {message: 'Auth required for put!'});
+users.put = (data, db, callback) => {
+    const {name, mail, password} = data.payload;
+    const userName = typeof (name) === 'string' && name.length > 5 ? name : false;
+    const userPassword = typeof (password) === 'string' && password.length > 7 ? password : false;
+    const userMail = typeof (mail) === 'string' ? mail : false;
+    const user = typeof( data.queryStringObject.id ) === 'string' && data.queryStringObject.id.length > 20 ? data.queryStringObject.id : false;
+
+    if(user) {
+        if(userName || userPassword || userMail)
+        {
+            if(userName) {
+                db.updateUser('name', userName, user, (err, data) => {
+                    if(!err) {
+                        callback(200, {message: data});
+                    } else {
+                        callback(400, {error: data})
+                    }
+                });
+            }
+            if(userPassword) {
+                db.updateUser('password', userPassword, user, (err, data) => {
+                    if(!err) {
+                        callback(200, {message: data});
+                    } else {
+                        callback(400, {error: data})
+                    }
+                });
+            }
+            if(userMail) {
+                db.updateUser('mail', userMail, user, (err, data) => {
+                    if(!err) {
+                        callback(200, {message: data});
+                    } else {
+                        callback(400, {error: data})
+                    }
+                });
+            }
+
+        } else {
+            callback(400, {error: 'missing required fields'});
+        }
+    } else callback(400, {error: 'invalid user id'});
 };
 
 users.delete = (data, db, callback) => {
