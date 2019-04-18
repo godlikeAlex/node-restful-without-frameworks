@@ -12,9 +12,9 @@ const users = (data, db, callback) => {
 
 users.post = ({payload}, db, callback) => {
    const {name, mail, password} = payload;
-   const userName = typeof (name) === 'string' && name.length > 5 ? name : false;
-   const userPassword = typeof (password) === 'string' && password.length > 7 ? password : false;
-   const userMail = typeof (mail) === 'string' ? mail : false;
+   const userName       = typeof (name) === 'string' && name.length > 5 ? name : false;
+   const userPassword   = typeof (password) === 'string' && password.length > 7 ? password : false;
+   const userMail       = typeof (mail) === 'string' ? mail : false;
 
    if(userName && userPassword && userMail) {
        const user = {
@@ -61,10 +61,10 @@ users.get = (data, db, callback) => {
 
 users.put = (data, db, callback) => {
     const {name, mail, password} = data.payload;
-    const userName = typeof (name) === 'string' && name.length > 5 ? name : false;
-    const userPassword = typeof (password) === 'string' && password.length > 7 ? password : false;
-    const userMail = typeof (mail) === 'string' ? mail : false;
-    const user = typeof( data.queryStringObject.id ) === 'string' && data.queryStringObject.id.length > 20 ? data.queryStringObject.id : false;
+    const userName      = typeof (name) === 'string' && name.length > 5 ? name : false;
+    const userPassword  = typeof (password) === 'string' && password.length > 7 ? password : false;
+    const userMail      = typeof (mail) === 'string' ? mail : false;
+    const user          = typeof( data.queryStringObject.id ) === 'string' && data.queryStringObject.id.length > 20 ? data.queryStringObject.id : false;
 
     if(user) {
         if(userName || userPassword || userMail)
