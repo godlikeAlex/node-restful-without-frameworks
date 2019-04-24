@@ -39,7 +39,7 @@ class MongoDB {
          .catch(err => {
              hasError = true;
              if(err.code === 11000) {
-                 error = {error: 'This mail al ready taken!'};
+                 error = {error: 'This mail all ready taken!'};
              }
          });
 
@@ -51,8 +51,14 @@ class MongoDB {
          }
     }
 
-    async findOne (colection, fields) {
-        const res = await this.dbo.collection('users').findOne(fields);
+    async findOne (collection, fields) {
+        const result = await this.dbo.collection(collection).findOne(fields);
+        this.db.close();
+        if(result !== null) {
+            return result;
+        } else {
+            return {error: 'User not found!'}
+        }
     }
 }
 

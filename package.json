@@ -18,5 +18,8 @@
   "homepage": "https://github.com/godlikeAlex/node-restful-without-frameworks#readme",
   "devDependencies": {
     "mysql": "^2.16.0"
+  },
+  "dependencies": {
+    "mongodb": "^3.2.3"
   }
 }

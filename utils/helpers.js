@@ -1,4 +1,15 @@
+const crypto = require('crypto');
+
 let helpers = {};
+
+helpers.hashPassword  = (password) => {
+    return crypto.createHash('sha256').update(password).digest('hex');
+};
+
+helpers.send = (statusCode, data) => {
+    return {status: statusCode, payload: data}
+};
+
 
 helpers.parseJsonToObject = (str) => {
     try {
@@ -20,4 +31,13 @@ helpers.randomStr = (len) => {
 
     return res;
 };
+
+helpers.checkRoute = (acceptableMethods, route, data, db) => {
+    if(acceptableMethods.indexOf(data.method) > -1) {
+        return route[data.method](data, db);
+    } else {
+        return helpers.send(500, {error: 'Access Denied'});
+    }
+};
+
 module.exports = helpers;
