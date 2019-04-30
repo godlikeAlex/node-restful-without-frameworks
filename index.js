@@ -14,7 +14,6 @@ server.httpServer = http.createServer( async (req, res) => {
     const parsedUrl = url.parse(req.url, true);
     const sessiondb = new SessionStorage('localhost:27017');
     const path = parsedUrl.pathname;
-    const trimmedPath = path.replace(/^\/+|\/+$/g, '');
     const queryStringObject = parsedUrl.query;
     const method = req.method;
     const headers = req.headers;
@@ -31,12 +30,12 @@ server.httpServer = http.createServer( async (req, res) => {
     req.on('end', async () => {
         buffer += decoder.end();
 
-        let routerHandler = typeof(routers[trimmedPath]) !== "undefined" ? routers[trimmedPath] : routers.notFound;
+        let routerHandler = typeof(routers[path]) !== "undefined" ? routers[path] : routers.notFound;
 
         const client = await Client.getInstance(req, res);
 
         const data = {
-            trimmedPath,
+            path,
             queryStringObject,
             method,
             headers,
@@ -45,15 +44,15 @@ server.httpServer = http.createServer( async (req, res) => {
         };
 
         res.on('finish', () => {
-            if (client.session) console.dir(client.session);
+            if (client.session) client.session.save();
         });
 
         routerHandler(data, sessiondb)
-            .then(({payload, status}) => {
+            .then(({payload, status, headers = null}) => {
                 const payloadString = JSON.stringify(payload);
 
                 client.sendCookie();
-                res.writeHead(status);
+                res.writeHead(status, headers);
                 res.end(payloadString);
             })
             .catch(err => console.dir('Error ' + err));
@@ -61,11 +60,11 @@ server.httpServer = http.createServer( async (req, res) => {
 });
 
 const routers = {
-    '': routing.main,
-    'users': routing.users,
-    'login': routing.auth.login,
-    'signup': routing.auth.signUp,
-    'notFound': routing.notFound
+    '/': routing.main,
+    '/users': routing.users,
+    '/login': routing.auth.login,
+    '/signup': routing.auth.signUp,
+    'notFound': routing.notFound,
 };
 
 server.httpServer.listen(3000, err => {
