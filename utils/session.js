@@ -1,7 +1,9 @@
 'use strict';
+const mongo = require('./mongo');
+const storage = new mongo('localhost:27017');
 
 const TOKEN_LENGTH  = 85;
-const ALPHA   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const ALPHA         = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 const generateToken = () => {
     const base = ALPHA.length;
@@ -14,19 +16,19 @@ const generateToken = () => {
     return token;
 };
 
-class Session extends Map {
+class Session {
     constructor(token){
-        super();
         this.token = token;
     }
 
-    static start(client) {
+    static start(client, user) {
         if(client.session) return client.session;
         const token = generateToken();
         client.token = token;
         const session = new Session(token);
         client.session = session;
         client.setCookie('token', token);
+        this.save(token, user);
         return session;
     }
 
@@ -57,8 +59,14 @@ class Session extends Map {
         }
     }
 
-    save() {
-        console.log('Save successfull');
+    static save(token, user) {
+        storage.findOne('session', {_id: token})
+            .then(() => {
+                throw new Error('This session all ready exists');
+            })
+            .catch(() => {
+                storage.createSession(token, user);
+            });
     }
 }
 
