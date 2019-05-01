@@ -1,15 +1,13 @@
-const notFound = (data, db,callback) => {
-    const acceptableMethods = ['post', 'get', 'put', 'delete'];
+const {send, checkRoute} = require('../utils/helpers');
 
-    if(acceptableMethods.indexOf(data.method) > -1) {
-        notFound[data.method](data, db, callback)
-    } else {
-        callback(400)
-    }
+const notFound = async (data, db) => {
+    const acceptableMethods = ['GET'];
+
+    return checkRoute(acceptableMethods, notFound, data);
 };
 
-notFound.get = (data, db, callback) => {
-    callback(404, 'Required page not found!')
+notFound.GET = () => {
+    return send(404, 'Required page not found!')
 };
 
 module.exports = notFound;
