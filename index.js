@@ -1,7 +1,6 @@
 const http          = require('http');
 const url           = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
-const db            = require('./utils/db');
 const Client        = require('./utils/client');
 const SessionStorage = require('./utils/mongo');
 
@@ -43,19 +42,13 @@ server.httpServer = http.createServer( async (req, res) => {
             payload: helpers.parseJsonToObject(buffer)
         };
 
-        res.on('finish', () => {
-            if (client.session) client.session.save();
-        });
-
         routerHandler(data, sessiondb)
             .then(({payload, status, headers = null}) => {
-                const payloadString = JSON.stringify(payload);
-
                 client.sendCookie();
                 res.writeHead(status, headers);
-                res.end(payloadString);
+                res.end(payload);
             })
-            .catch(err => console.dir('Error ' + err));
+            .catch(err => console.dir('Error: ' + err));
     });
 });
 

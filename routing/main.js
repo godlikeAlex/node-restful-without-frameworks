@@ -1,15 +1,15 @@
 const Session = require('../utils/session.js');
+const {send, checkRoute, renderHTML} = require('../utils/helpers');
 
-const main = async (data, db, callback) => {
-    const acceptableMethods = ['post', 'get', 'put', 'delete'];
+const main = async (data, db) => {
+    const acceptableMethods = ['GET'];
 
-    Session.start(data.client);
+    return checkRoute(acceptableMethods, main, data, db);
+};
 
-    if(acceptableMethods.indexOf(data.method) > -1) {
-        return 'hello'
-    } else {
-        callback(400)
-    }
+main.GET = ({client}) => {
+    const template = renderHTML('index');
+    return send(200, template,'html');
 };
 
 module.exports = main;
