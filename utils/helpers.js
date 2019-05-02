@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 const pug = require('pug');
 
@@ -19,6 +20,10 @@ helpers.send = (statusCode, payload, contentType, headers) => {
             break;
         case 'html':
             headers = {'Content-Type': 'text/html'};
+            payloadString = payload;
+            break;
+        case 'css':
+            headers = {'Content-Type': 'text/css'};
             payloadString = payload;
             break;
         default:
@@ -62,6 +67,25 @@ helpers.renderHTML =(page, variables = null) => {
     const VIEW_PATH = path.join(__dirname,'../views/pages');
 
     return pug.renderFile(`${VIEW_PATH}/${page}.pug`, variables);
+};
+
+helpers.getStaticAssets = (fileName) => {
+    fileName = typeof (fileName) === 'string' ? fileName : false;
+
+    if(fileName) {
+        return new Promise((resolve, reject) => {
+            let folder = path.join(__dirname, '../static/');
+            fs.readFile(folder+fileName,(err, data) => {
+                if(!err && data) {
+                    resolve(data);
+                } else {
+                    reject(err);
+                }
+            });
+        });
+    }else{
+        return {'error': 'A valid file name is not specefied'}
+    }
 };
 
 module.exports = helpers;
